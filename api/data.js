@@ -1,5 +1,51 @@
 // Vercel serverless function: fetches live data from SimpleFIN (both accounts)
 // and returns it in the format the dashboard expects.
+// Accepts ?token=<user_token> to return a user-restricted view.
+
+const REPO = 'erickameged/celestra-life-dashboard';
+
+async function getPdToken() {
+  const res = await fetch('https://api.pipedream.com/v1/oauth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      grant_type: 'client_credentials',
+      client_id: process.env.PD_CLIENT_ID,
+      client_secret: process.env.PD_CLIENT_SECRET,
+    }),
+  });
+  return (await res.json()).access_token;
+}
+
+function buildGhProxyUrl(targetUrl, pdProjectId) {
+  const b64 = Buffer.from(targetUrl, 'utf8').toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const qs = new URLSearchParams({
+    account_id: process.env.GH_ACCOUNT_ID,
+    external_user_id: process.env.GH_EXTERNAL_USER_ID,
+  });
+  return `https://api.pipedream.com/v1/connect/${pdProjectId}/proxy/${b64}?${qs}`;
+}
+
+let _usersCache = null;
+let _usersCacheTs = 0;
+
+async function getUsersFromGitHub() {
+  const now = Date.now();
+  if (_usersCache && now - _usersCacheTs < 60_000) return _usersCache;
+  try {
+    const pdToken = await getPdToken();
+    const pdProjectId = process.env.PD_PROJECT_ID;
+    const res = await fetch(buildGhProxyUrl(`https://api.github.com/repos/${REPO}/contents/users.json`, pdProjectId), {
+      headers: { 'Authorization': `Bearer ${pdToken}`, 'x-pd-environment': 'production' },
+    });
+    if (!res.ok) return [];
+    const j = await res.json();
+    _usersCache = JSON.parse(Buffer.from(j.content, 'base64').toString('utf8'));
+    _usersCacheTs = now;
+    return Array.isArray(_usersCache) ? _usersCache : [];
+  } catch { return []; }
+}
 
 const CATEGORY_MAP = [
   [/transfer|zelle|ach|wire/i, 'Transfers Out'],
@@ -56,7 +102,21 @@ async function fetchSimpleFIN(accessUrl, startDateTs) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+
+  // Resolve user view restriction if ?token= provided
+  let allowedAccounts = null; // null = no restriction (admin)
+  let viewUser = null;
+  const userToken = req.query.token;
+  if (userToken) {
+    const users = await getUsersFromGitHub();
+    const matchedUser = users.find(u => u.token === userToken);
+    if (!matchedUser) return res.status(403).json({ error: 'Invalid or expired access token' });
+    allowedAccounts = matchedUser.allowed_accounts || [];
+    viewUser = { id: matchedUser.id, name: matchedUser.name };
+    res.setHeader('Cache-Control', 'no-store');
+  } else {
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+  }
 
   const startDateParam = req.query.start_date;
   let startTs;
@@ -93,7 +153,12 @@ export default async function handler(req, res) {
     }
   }
 
-  const accounts = Object.values(allAcctMap);
+  let accounts = Object.values(allAcctMap);
+
+  // Filter accounts for user view
+  if (allowedAccounts !== null) {
+    accounts = accounts.filter(a => allowedAccounts.includes(a.name));
+  }
 
   // Build LIVE_BALANCES shape
   const liveBalances = {};
@@ -135,5 +200,6 @@ export default async function handler(req, res) {
     accounts: liveBalances,
     generatedAt: new Date().toISOString(),
     errors: errors.length ? errors : undefined,
+    viewUser: viewUser || undefined,
   });
 }
