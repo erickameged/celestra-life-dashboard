@@ -101,16 +101,66 @@
   .acct .bal{font-size:13px;font-weight:600;margin-top:4px}
   .acct .bal .cur-lbl{font-size:10px;color:var(--muted);font-weight:400;margin-left:3px}
   .acct .txn-net{font-size:10px;color:var(--muted);margin-top:1px}
+
+  /* ── User Management ──────────────────────────────────────────────────── */
+  .um-panel{display:none;padding:24px 0}
+  .um-panel.active{display:block}
+  .um-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+  .um-topbar h2{font-size:17px;font-weight:700}
+  .btn{border:none;cursor:pointer;border-radius:9px;padding:8px 16px;font-size:12.5px;font-weight:600;transition:background .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:#5a4bd0}
+  .btn-ghost{background:var(--line);color:var(--ink)}
+  .btn-ghost:hover{background:#dde0e9}
+  .btn-danger{background:#fde8ea;color:var(--neg)}
+  .btn-danger:hover{background:#fbd0d4}
+  .btn-sm{padding:5px 11px;font-size:11.5px}
+  .um-table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(20,23,40,.07)}
+  .um-table th{text-align:left;padding:11px 16px;font-size:11px;font-weight:700;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .um-table td{padding:13px 16px;font-size:12.5px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .um-table tr:last-child td{border-bottom:none}
+  .um-table tr:hover td{background:var(--accent-soft)}
+  .um-actions{display:flex;gap:6px;align-items:center}
+  .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700}
+  .um-empty{text-align:center;padding:40px;color:var(--muted);font-style:italic}
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,12,30,.45);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px)}
+  .modal{background:var(--panel);border-radius:16px;padding:28px;width:520px;max-width:94vw;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(10,12,30,.2)}
+  .modal h3{font-size:15px;font-weight:700;margin-bottom:18px}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+  .form-control{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--ink);background:#fff;outline:none}
+  .form-control:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
+  .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  /* Account checklist */
+  .acct-checklist{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow-y:auto;margin-top:4px}
+  .acct-check-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+  .acct-check-item:last-child{border-bottom:none}
+  .acct-check-item:hover{background:var(--accent-soft)}
+  .acct-check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+  .acct-check-item label{cursor:pointer;font-size:12.5px;flex:1}
+  .acct-check-grp{padding:6px 14px;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+  /* Admin auth gate */
+  .auth-gate{background:var(--panel);border-radius:14px;padding:30px;max-width:380px;margin:60px auto;text-align:center;box-shadow:0 2px 12px rgba(20,23,40,.08)}
+  .auth-gate h3{margin-bottom:8px;font-size:15px}
+  .auth-gate p{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+  /* Link copy toast */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:10px 20px;font-size:13px;z-index:99999;opacity:0;transition:opacity .2s}
+  .toast.show{opacity:1}
+  /* Nav user badge */
+  .nav a.admin-only{display:flex}
+  .user-view .admin-only{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side">
     <div class="brand"><span class="dot"></span> Rob's Expense Tracker</div>
-    <nav class="nav">
-      <a class="active" data-scroll="overview">📊 Overview</a>
-      <a data-scroll="accounts">🏦 Accounts</a>
-      <a data-scroll="ledger">📄 Transactions</a>
+    <nav class="nav" id="main-nav">
+      <a class="active dash-nav" data-scroll="overview">📊 Overview</a>
+      <a class="dash-nav" data-scroll="accounts">🏦 Accounts</a>
+      <a class="dash-nav" data-scroll="ledger">📄 Transactions</a>
+      <a class="admin-only" id="nav-users" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px" onclick="showUsersPanel()">👥 Users</a>
     </nav>
     <div class="who"><span class="av" id="who-av">RS</span><div><div style="font-weight:700">Rob's Expense Tracker</div><div style="color:var(--muted);font-size:11px">SimpleFIN feed</div></div></div>
   </aside>
@@ -181,6 +231,69 @@
 
     <div id="loading" class="loading">Loading transactions…</div>
   </main>
+
+  <!-- User Management Panel -->
+  <div id="users-panel" class="um-panel main">
+
+    <div id="um-auth-gate" class="auth-gate" style="display:none">
+      <h3>🔐 Admin Access</h3>
+      <p>Enter the admin secret to manage users.</p>
+      <div class="form-group"><input type="password" id="um-secret-input" class="form-control" placeholder="Admin secret…" /></div>
+      <button class="btn btn-primary" style="width:100%" onclick="submitAdminAuth()">Unlock</button>
+      <p id="um-auth-err" style="color:var(--neg);font-size:12px;margin-top:10px;display:none">Incorrect secret.</p>
+    </div>
+
+    <div id="um-content" style="display:none">
+      <div class="um-topbar">
+        <h2>User Management</h2>
+        <button class="btn btn-primary" onclick="openUserModal()">+ New User</button>
+      </div>
+      <table class="um-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Accounts</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody"><tr><td colspan="4" class="um-empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- User Create/Edit Modal -->
+  <div id="user-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUserModal()">
+    <div class="modal">
+      <h3 id="modal-title">New User</h3>
+      <input type="hidden" id="um-edit-id" value="" />
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="um-name" class="form-control" placeholder="e.g. Frank Sena" />
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="um-username" class="form-control" placeholder="e.g. frank" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Password <span style="font-weight:400;text-transform:none;letter-spacing:0">(leave blank to keep existing)</span></label>
+        <input type="password" id="um-password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <label>Visible Accounts</label>
+        <div class="acct-checklist" id="um-acct-list">Loading accounts…</div>
+      </div>
+      <div id="um-modal-err" style="color:var(--neg);font-size:12px;display:none;margin-bottom:8px"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeUserModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveUser()">Save User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
 </div>
 
 <script>
@@ -509,6 +622,285 @@ function drawChips(){
     "document.getElementById('group-toggle').querySelectorAll('.tgl').forEach(function(b){b.classList.remove('on')});"+
     "document.getElementById('group-toggle').querySelector('[data-g=all]').classList.add('on');"+
     "render()\">Reset all</span>" : '');
+}
+
+// ── User Management ──────────────────────────────────────────────────────────
+var IS_ADMIN_VIEW = !new URLSearchParams(window.location.search).get('token');
+var ADMIN_SECRET_KEY = 'celestra_admin_secret';
+var _usersCache = null;
+
+// Apply user-view class to body if token present
+if (!IS_ADMIN_VIEW) document.documentElement.classList.add('user-view');
+
+// Update window.onload to pass token and show user name
+(function(){
+  var origOnload = window.onload;
+  window.onload = function(){
+    var params = new URLSearchParams(window.location.search);
+    var token = params.get('token');
+    var startDate = new Date();
+    startDate.setDate(startDate.getDate() - 90);
+    var sd = startDate.toISOString().split('T')[0];
+    var url = '/api/data?start_date=' + sd + (token ? '&token=' + encodeURIComponent(token) : '');
+    fetch(url)
+      .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(res){
+        if(res.viewUser){
+          // User view: update brand/who
+          var n = res.viewUser.name;
+          document.querySelector('.brand').innerHTML = '<span class="dot"></span> ' + esc(n) + ' Dashboard';
+          var av = document.getElementById('who-av');
+          if(av) av.textContent = n.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+          var whoName = document.querySelector('.who div div:first-child');
+          if(whoName) whoName.textContent = n;
+        }
+        onData(res);
+      })
+      .catch(function(e){ onErr(e); });
+  };
+})();
+
+// ── Admin auth ───────────────────────────────────────────────────────────────
+function getAdminSecret(){ return sessionStorage.getItem(ADMIN_SECRET_KEY) || ''; }
+function setAdminSecret(s){ sessionStorage.setItem(ADMIN_SECRET_KEY, s); }
+
+function showUsersPanel(){
+  // Hide dashboard sections
+  document.getElementById('content').classList.add('hidden');
+  document.getElementById('loading').classList.add('hidden');
+  // Show users panel
+  var panel = document.getElementById('users-panel');
+  panel.classList.add('active');
+  document.querySelectorAll('.dash-nav').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('nav-users').classList.add('active');
+  // Check auth
+  if(getAdminSecret()){
+    showUmContent();
+  } else {
+    document.getElementById('um-auth-gate').style.display = 'block';
+    document.getElementById('um-content').style.display = 'none';
+    setTimeout(function(){ document.getElementById('um-secret-input').focus(); }, 100);
+  }
+}
+
+function hideDashPanel(){
+  document.getElementById('users-panel').classList.remove('active');
+  document.getElementById('nav-users').classList.remove('active');
+  document.getElementById('content').classList.remove('hidden');
+}
+
+// Wire dash nav items to hide users panel
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.dash-nav').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.querySelectorAll('.nav a').forEach(function(x){ x.classList.remove('active'); });
+      a.classList.add('active');
+      hideDashPanel();
+    });
+  });
+  document.getElementById('um-secret-input').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') submitAdminAuth();
+  });
+});
+
+function submitAdminAuth(){
+  var s = document.getElementById('um-secret-input').value.trim();
+  if(!s) return;
+  // Test the secret against the API
+  fetch('/api/users', { headers: { 'Authorization': 'Bearer ' + s } })
+    .then(function(r){
+      if(r.status === 401){ showAuthError(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if(!data) return;
+      setAdminSecret(s);
+      document.getElementById('um-secret-input').value = '';
+      showUmContent(data.users);
+    })
+    .catch(function(){ showAuthError(); });
+}
+
+function showAuthError(){
+  var err = document.getElementById('um-auth-err');
+  err.style.display = 'block';
+  setTimeout(function(){ err.style.display = 'none'; }, 3000);
+}
+
+function showUmContent(preloaded){
+  document.getElementById('um-auth-gate').style.display = 'none';
+  document.getElementById('um-content').style.display = 'block';
+  if(preloaded){ renderUsersTable(preloaded); _usersCache = preloaded; }
+  else loadUsers();
+}
+
+// ── Users CRUD ───────────────────────────────────────────────────────────────
+function apiUsers(method, path, body){
+  return fetch('/api/users' + (path||''), {
+    method: method || 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + getAdminSecret(),
+      'Content-Type': 'application/json'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||r.status); return j; }); });
+}
+
+function loadUsers(){
+  document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" class="um-empty">Loading…</td></tr>';
+  apiUsers('GET').then(function(data){
+    _usersCache = data.users || [];
+    renderUsersTable(_usersCache);
+  }).catch(function(e){ showToast('Error: ' + e.message); });
+}
+
+function renderUsersTable(users){
+  var tbody = document.getElementById('users-tbody');
+  if(!users || !users.length){
+    tbody.innerHTML = '<tr><td colspan="4" class="um-empty">No users yet. Click "+ New User" to create one.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(function(u){
+    var acctCount = (u.allowed_accounts||[]).length;
+    var link = window.location.origin + '/?token=' + u.token;
+    return '<tr>' +
+      '<td><strong>' + esc(u.name) + '</strong></td>' +
+      '<td style="color:var(--muted)">' + esc(u.username) + '</td>' +
+      '<td><span class="badge">' + acctCount + ' account' + (acctCount!==1?'s':'') + '</span></td>' +
+      '<td><div class="um-actions">' +
+        '<button class="btn btn-ghost btn-sm" onclick="copyLink(' + JSON.stringify(link) + ')">🔗 Copy Link</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="openUserModal(' + JSON.stringify(u.id) + ')">Edit</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteUser(' + JSON.stringify(u.id) + ',' + JSON.stringify(u.name) + ')">Delete</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+// ── Modal ────────────────────────────────────────────────────────────────────
+var _editingUserId = null;
+
+function openUserModal(userId){
+  _editingUserId = userId || null;
+  document.getElementById('modal-title').textContent = userId ? 'Edit User' : 'New User';
+  document.getElementById('um-edit-id').value = userId || '';
+  document.getElementById('um-name').value = '';
+  document.getElementById('um-username').value = '';
+  document.getElementById('um-password').value = '';
+  document.getElementById('um-modal-err').style.display = 'none';
+
+  // Populate account checklist
+  var allAccounts = Object.keys(LIVE_BALANCES);
+  var selectedAccounts = [];
+  if(userId && _usersCache){
+    var u = _usersCache.find(function(x){ return x.id === userId; });
+    if(u){
+      document.getElementById('um-name').value = u.name || '';
+      document.getElementById('um-username').value = u.username || '';
+      selectedAccounts = u.allowed_accounts || [];
+    }
+  }
+
+  // Build checklist grouped by account group
+  var listEl = document.getElementById('um-acct-list');
+  if(!allAccounts.length){
+    listEl.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:12px">No accounts loaded. Open the dashboard first.</div>';
+  } else {
+    var grouped = {};
+    allAccounts.forEach(function(name){
+      var g = getAccountGroup(name);
+      if(!grouped[g]) grouped[g] = [];
+      grouped[g].push(name);
+    });
+    var html = '';
+    ['Personal','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'].concat(
+      Object.keys(grouped).filter(function(g){ return ['Personal','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'].indexOf(g)===-1; })
+    ).forEach(function(grp){
+      if(!grouped[grp] || !grouped[grp].length) return;
+      html += '<div class="acct-check-grp">' + esc(grp) + '</div>';
+      grouped[grp].forEach(function(name){
+        var checked = selectedAccounts.indexOf(name) !== -1;
+        var id = 'chk-' + name.replace(/[^a-z0-9]/gi,'_');
+        html += '<div class="acct-check-item"><input type="checkbox" id="' + id + '" value="' + esc(name) + '"' + (checked?' checked':'') + '><label for="' + id + '">' + esc(name) + '</label></div>';
+      });
+    });
+    listEl.innerHTML = html;
+  }
+
+  document.getElementById('user-modal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('um-name').focus(); }, 80);
+}
+
+function closeUserModal(){
+  document.getElementById('user-modal').style.display = 'none';
+  _editingUserId = null;
+}
+
+function saveUser(){
+  var name = document.getElementById('um-name').value.trim();
+  var username = document.getElementById('um-username').value.trim();
+  var password = document.getElementById('um-password').value;
+  var checked = document.querySelectorAll('#um-acct-list input[type=checkbox]:checked');
+  var allowed = Array.from(checked).map(function(c){ return c.value; });
+
+  if(!name || !username){
+    showModalErr('Name and username are required.');
+    return;
+  }
+
+  var body = { name: name, username: username, allowed_accounts: allowed };
+  if(password) body.password = password;
+
+  var method = _editingUserId ? 'PUT' : 'POST';
+  var path = _editingUserId ? '?id=' + _editingUserId : '';
+
+  apiUsers(method, path, body)
+    .then(function(data){
+      closeUserModal();
+      if(_usersCache){
+        if(method === 'POST'){ _usersCache.push(data.user); }
+        else {
+          var idx = _usersCache.findIndex(function(u){ return u.id === data.user.id; });
+          if(idx !== -1) _usersCache[idx] = data.user;
+        }
+        renderUsersTable(_usersCache);
+      }
+      showToast((_editingUserId ? 'User updated' : 'User created') + ' — ' + name);
+    })
+    .catch(function(e){ showModalErr(e.message); });
+}
+
+function showModalErr(msg){
+  var el = document.getElementById('um-modal-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function deleteUser(id, name){
+  if(!confirm('Delete user "' + name + '"? Their access link will stop working immediately.')) return;
+  apiUsers('DELETE', '?id=' + id)
+    .then(function(){
+      if(_usersCache){
+        _usersCache = _usersCache.filter(function(u){ return u.id !== id; });
+        renderUsersTable(_usersCache);
+      }
+      showToast('User deleted — ' + name);
+    })
+    .catch(function(e){ showToast('Error: ' + e.message); });
+}
+
+function copyLink(link){
+  navigator.clipboard.writeText(link).then(function(){
+    showToast('Link copied to clipboard!');
+  }).catch(function(){
+    prompt('Copy this link:', link);
+  });
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
 }
 </script>
 </body>
