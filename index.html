@@ -130,6 +130,7 @@
           <button class="tgl" data-g="Personal">Personal</button>
           <button class="tgl" data-g="PayDiverse/Elm">PayDiverse / Elm</button>
           <button class="tgl" data-g="Celestra/Fortuna">Celestra / Fortuna</button>
+          <button class="tgl" data-g="Frank Personal">Frank Personal</button>
         </div>
       </div>
     </div>
@@ -195,7 +196,8 @@ var barChart, donutChart;
 
 var ACCT_GROUPS = {
   'PayDiverse/Elm': ['3000','9613','1360','1378','3292'],
-  'Celestra/Fortuna': ['1007','6576','6852']
+  'Celestra/Fortuna': ['1007','6576','6852'],
+  'Frank Personal': ['8238','6469','9575','0928','5917','5150']
 };
 function getAccountGroup(name){
   var n = (name||'').toLowerCase();
@@ -421,7 +423,7 @@ function drawAccounts(){
     var accts = Array.from(new Set(groupRows.map(function(r){return r.account;}).concat(knownInGrp))).sort();
     container.innerHTML = '<div class="acct-grid">' + accts.map(function(a){ return renderAcctCard(a, groupRows); }).join('') + '</div>';
   } else {
-    var groupOrder = ['Personal','PayDiverse/Elm','Celestra/Fortuna'];
+    var groupOrder = ['Personal','PayDiverse/Elm','Celestra/Fortuna','Frank Personal'];
     container.innerHTML = groupOrder.map(function(grp){
       var grpRows = periodRows.filter(function(r){ return getAccountGroup(r.account)===grp; });
       var knownInGrp2 = ALL_KNOWN_ACCOUNTS.filter(function(a){ return getAccountGroup(a)===grp; });
