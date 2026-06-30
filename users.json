@@ -1,14 +1,12 @@
 [
   {
-    "id": "b3e162c9-4a5f-46c3-b7b1-da5fb2bb9d98",
-    "name": "Ericka",
-    "username": "ericka1",
+    "id": "admin-2e4408d573a2f07c",
+    "name": "Admin",
+    "username": "admin",
     "password_hash": "3be28b5c645f1e230777806c9fc7f0a822c8e0112f0bebcacfd460b0060c7a88",
-    "token": "bf6d79ee76bbb1e76558902514221d4b2a9f464b35f6582a",
-    "allowed_accounts": [
-      "Moliterno Checking (5930)",
-      "Moliterno Savings (8787)"
-    ],
-    "created_at": "2026-06-30T23:29:10.294Z"
+    "token": "b4d563f84a46d8e88a526033ba1027c2055b17676a4cb080",
+    "allowed_accounts": [],
+    "is_admin": true,
+    "created_at": "2026-06-30T23:51:10.541Z"
   }
 ]
