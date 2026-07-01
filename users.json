@@ -88,12 +88,27 @@
     "token": "b3b783a4cb3ba6a06045eed213f05a0d074e07f826432d81",
     "allowed_accounts": [
       "Perseverance Cap (8808)",
+      "Account",
       "Amazon CC (5150)",
+      "Atmos Rewards Ascent Visa Signature- 8619 (8619)",
+      "BTC Wallet (bde7ed9b-34c1-5047-9756-dba7b0d43bb5)",
+      "Business Platinum Card® (4005)",
       "CREDIT CARD (8238)",
       "Chase Freedom Unlimited (9575)",
+      "Citi®/AAdvantage® Executive World Elite Mastercard®-9785 (9785)",
+      "DEMILT PARAMETRIC (3438)",
+      "DEMILT WCMA (3439)",
+      "Demilt Capital Management LLC Francis Sena Non Prototype NFS  PPS Custom (566))",
+      "Demilt Capital Management LLC Limited Liability Company NFS  PPS Custom (728))",
+      "Individual ...340 (340)",
+      "Individual 3.30% APY (3988)",
+      "Investor Checking ...707 (707)",
       "MANAGED BROKERAGE (6469)",
+      "Marriott Bonvoy Brilliant® American Express® Card (1009)",
+      "Nordstrom retail credit card - 1539 (1539)",
       "Personal Checking (5917)",
       "Personal Savings (0928)",
+      "Savings Account (9225)",
       "Business Gold Card (3000)",
       "Elm Credit Card (3292)",
       "Elm Incoming (1360)",
@@ -105,6 +120,6 @@
     ],
     "is_admin": false,
     "created_at": "2026-07-01T15:29:34.362Z",
-    "updated_at": "2026-07-01T16:48:51.510Z"
+    "updated_at": "2026-07-01T19:31:09.281Z"
   }
 ]
