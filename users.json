@@ -20,5 +20,40 @@
       "Chase Sapphire Reserve (9995)"
     ],
     "created_at": "2026-06-30T23:54:26.939Z"
+  },
+  {
+    "id": "57f6809c-3887-4ccd-8ab9-eb1422311e69",
+    "name": "Robert Sena",
+    "username": "dashboard_rob",
+    "password_hash": "3be28b5c645f1e230777806c9fc7f0a822c8e0112f0bebcacfd460b0060c7a88",
+    "token": "aa5a6d254f8c15a21fc7476f787f487706f5ffe277ae816b",
+    "allowed_accounts": [
+      "Business Platinum Card® (2006)",
+      "Chase Sapphire Reserve (9995)",
+      "Citi®/AAdvantage® Executive World Elite Mastercard®-2052 (2052)",
+      "F. SENA (6860)",
+      "Individual ...620 (620)",
+      "Individual Brokerage -1950 (1950)",
+      "Individual Brokerage -3030 (3030)",
+      "LLC S Corporation -7447 (7447)",
+      "Marriott Bonvoy Brilliant® American Express® Card (1003)",
+      "Moliterno Checking (5930)",
+      "Moliterno Savings (8787)",
+      "Perseverance Cap (8808)",
+      "RJS Savings (5137)",
+      "Ritz Carlton (8588)",
+      "Robert J Sena Check (7095)",
+      "Self-Directed (0146)",
+      "Business Gold Card (3000)",
+      "Elm Credit Card (3292)",
+      "Elm Incoming (1360)",
+      "Elm Outgoing (1378)",
+      "Ink (9613)",
+      "Business Gold Card (1007)",
+      "FUL (6576)",
+      "R. SENA (6852)"
+    ],
+    "is_admin": false,
+    "created_at": "2026-07-01T15:28:52.566Z"
   }
 ]
