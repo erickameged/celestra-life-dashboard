@@ -55,5 +55,30 @@
     ],
     "is_admin": false,
     "created_at": "2026-07-01T15:28:52.566Z"
+  },
+  {
+    "id": "12310701-f8ce-422c-aec4-4f251a555bc5",
+    "name": "Frank Sena",
+    "username": "Frank",
+    "password_hash": "3be28b5c645f1e230777806c9fc7f0a822c8e0112f0bebcacfd460b0060c7a88",
+    "token": "b3b783a4cb3ba6a06045eed213f05a0d074e07f826432d81",
+    "allowed_accounts": [
+      "Amazon CC (5150)",
+      "CREDIT CARD (8238)",
+      "Chase Freedom Unlimited (9575)",
+      "MANAGED BROKERAGE (6469)",
+      "Personal Checking (5917)",
+      "Personal Savings (0928)",
+      "Business Gold Card (3000)",
+      "Elm Credit Card (3292)",
+      "Elm Incoming (1360)",
+      "Elm Outgoing (1378)",
+      "Ink (9613)",
+      "Business Gold Card (1007)",
+      "FUL (6576)",
+      "R. SENA (6852)"
+    ],
+    "is_admin": false,
+    "created_at": "2026-07-01T15:29:34.362Z"
   }
 ]
