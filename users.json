@@ -10,18 +10,6 @@
     "created_at": "2026-06-30T23:51:10.541Z"
   },
   {
-    "id": "2097bfbb-47db-49a0-bdeb-e2611254a216",
-    "name": "Ericka1",
-    "username": "ericka1",
-    "password_hash": "3be28b5c645f1e230777806c9fc7f0a822c8e0112f0bebcacfd460b0060c7a88",
-    "token": "5d6e0df063d16ab1999c94c03d42eaa830a5385041d34c22",
-    "allowed_accounts": [
-      "Business Platinum Card® (2006)",
-      "Chase Sapphire Reserve (9995)"
-    ],
-    "created_at": "2026-06-30T23:54:26.939Z"
-  },
-  {
     "id": "57f6809c-3887-4ccd-8ab9-eb1422311e69",
     "name": "Robert Sena",
     "username": "dashboard_rob",
