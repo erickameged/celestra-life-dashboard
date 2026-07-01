@@ -59,7 +59,7 @@
   {
     "id": "12310701-f8ce-422c-aec4-4f251a555bc5",
     "name": "Frank Sena",
-    "username": "Frank",
+    "username": "dashboard_frank",
     "password_hash": "3be28b5c645f1e230777806c9fc7f0a822c8e0112f0bebcacfd460b0060c7a88",
     "token": "b3b783a4cb3ba6a06045eed213f05a0d074e07f826432d81",
     "allowed_accounts": [
@@ -80,6 +80,6 @@
     ],
     "is_admin": false,
     "created_at": "2026-07-01T15:29:34.362Z",
-    "updated_at": "2026-07-01T15:32:52.684Z"
+    "updated_at": "2026-07-01T15:33:38.900Z"
   }
 ]
