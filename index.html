@@ -6,9 +6,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#f5f6fa; --panel:#ffffff; --ink:#1d2230; --muted:#878da0;
-    --line:#eceef4; --accent:#6c5ce7; --accent-soft:#efedfe;
-    --pos:#1bbf83; --neg:#ef5b6b;
+    --bg:#f0f4f8; --panel:#ffffff; --ink:#1a2640; --muted:#6b7a99;
+    --line:#dde3ee; --accent:#1d4ed8; --accent-soft:#dbeafe;
+    --pos:#059669; --neg:#dc2626;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -17,7 +17,7 @@
   .side{width:208px;background:var(--panel);border-right:1px solid var(--line);padding:18px 14px;flex:none;
         position:sticky;top:0;align-self:flex-start;height:100vh;display:flex;flex-direction:column;overflow-y:auto}
   .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;margin-bottom:22px;padding:4px}
-  .brand .dot{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--accent),#9b8cff)}
+  .brand .dot{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
   .nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;color:var(--muted);
          text-decoration:none;font-weight:600;margin-bottom:2px;cursor:pointer}
   .nav a.active,.nav a:hover{background:var(--accent-soft);color:var(--accent)}
@@ -71,8 +71,9 @@
   .lrow .nm{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lrow .amt{font-weight:700}
   .lrow .pct{color:var(--muted);width:34px;text-align:right}
-  .acct-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
-                    color:var(--muted);padding:10px 2px 6px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  .acct-group-label{font-size:16px;font-weight:800;letter-spacing:-.01em;
+                    color:var(--accent);padding:18px 0 10px;border-bottom:2px solid var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .acct-group-label::before{content:'';display:block;width:4px;height:20px;background:var(--accent);border-radius:2px;flex-shrink:0}
   .acct-section{margin-bottom:18px}
   .acct-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .acct{border:1px solid transparent;border-radius:12px;padding:13px;cursor:pointer;background:var(--bg);transition:border-color .12s,box-shadow .12s;min-width:0;overflow:hidden}
@@ -97,59 +98,101 @@
   .pager button:disabled{opacity:.4;cursor:default}
   .pager select{padding:6px 26px 6px 10px}
   .hidden{display:none}
+  .user-view .admin-only{display:none!important}
   .badge-new{display:inline-block;background:var(--pos);color:#fff;border-radius:4px;font-size:9px;font-weight:700;padding:1px 5px;letter-spacing:.05em;vertical-align:middle;margin-left:6px;text-transform:uppercase}
   .acct .bal{font-size:13px;font-weight:600;margin-top:4px}
   .acct .bal .cur-lbl{font-size:10px;color:var(--muted);font-weight:400;margin-left:3px}
   .acct .txn-net{font-size:10px;color:var(--muted);margin-top:1px}
 
-  /* ── User Management ──────────────────────────────────────────────────── */
-  .um-panel{display:none;padding:24px 0}
-  .um-panel.active{display:block}
-  .um-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-  .um-topbar h2{font-size:17px;font-weight:700}
-  .btn{border:none;cursor:pointer;border-radius:9px;padding:8px 16px;font-size:12.5px;font-weight:600;transition:background .12s}
-  .btn-primary{background:var(--accent);color:#fff}
-  .btn-primary:hover{background:#5a4bd0}
-  .btn-ghost{background:var(--line);color:var(--ink)}
-  .btn-ghost:hover{background:#dde0e9}
-  .btn-danger{background:#fde8ea;color:var(--neg)}
-  .btn-danger:hover{background:#fbd0d4}
-  .btn-sm{padding:5px 11px;font-size:11.5px}
-  .um-table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(20,23,40,.07)}
-  .um-table th{text-align:left;padding:11px 16px;font-size:11px;font-weight:700;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
-  .um-table td{padding:13px 16px;font-size:12.5px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .um-table tr:last-child td{border-bottom:none}
-  .um-table tr:hover td{background:var(--accent-soft)}
-  .um-actions{display:flex;gap:6px;align-items:center}
-  .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700}
-  .um-empty{text-align:center;padding:40px;color:var(--muted);font-style:italic}
-  /* Modal */
-  .modal-overlay{position:fixed;inset:0;background:rgba(10,12,30,.45);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px)}
-  .modal{background:var(--panel);border-radius:16px;padding:28px;width:520px;max-width:94vw;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(10,12,30,.2)}
-  .modal h3{font-size:15px;font-weight:700;margin-bottom:18px}
-  .form-group{margin-bottom:14px}
-  .form-group label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
-  .form-control{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--ink);background:#fff;outline:none}
-  .form-control:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-  .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-  /* Account checklist */
-  .acct-checklist{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow-y:auto;margin-top:4px}
-  .acct-check-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer}
-  .acct-check-item:last-child{border-bottom:none}
-  .acct-check-item:hover{background:var(--accent-soft)}
-  .acct-check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
-  .acct-check-item label{cursor:pointer;font-size:12.5px;flex:1}
-  .acct-check-grp{padding:6px 14px;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
-  /* Admin auth gate */
-  .auth-gate{background:var(--panel);border-radius:14px;padding:30px;max-width:380px;margin:60px auto;text-align:center;box-shadow:0 2px 12px rgba(20,23,40,.08)}
-  .auth-gate h3{margin-bottom:8px;font-size:15px}
-  .auth-gate p{color:var(--muted);font-size:12.5px;margin-bottom:18px}
-  /* Link copy toast */
-  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:10px 20px;font-size:13px;z-index:99999;opacity:0;transition:opacity .2s}
-  .toast.show{opacity:1}
-  /* Nav user badge */
-  .nav a.admin-only{display:flex}
-  .user-view .admin-only{display:none!important}
+  /* ── Create View ───────────────────────────────────────────────────────── */
+  .btn-create-view{border:1.5px dashed var(--accent);background:transparent;color:var(--accent);
+    border-radius:20px;padding:5px 13px;font-size:11.5px;font-weight:700;cursor:pointer;
+    white-space:nowrap;transition:background .12s,color .12s}
+  .btn-create-view:hover{background:var(--accent-soft)}
+  .view-chip{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);
+    border-radius:20px;padding:5px 13px;font-size:11.5px;font-weight:600;cursor:pointer;
+    white-space:nowrap;transition:background .12s,border-color .12s;position:relative}
+  .view-chip:hover{border-color:var(--accent);color:var(--accent)}
+  .view-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .view-chip .del-view{margin-left:6px;opacity:.6;font-size:13px;line-height:1;vertical-align:middle}
+  .view-chip .del-view:hover{opacity:1}
+  /* Create View Modal */
+  .cv-modal-overlay{position:fixed;inset:0;background:rgba(10,12,30,.45);display:flex;
+    align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px)}
+  .cv-modal{background:var(--panel);border-radius:16px;padding:28px;width:500px;
+    max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 12px 48px rgba(10,12,30,.2)}
+  .cv-modal h3{font-size:15px;font-weight:700;margin-bottom:18px}
+  .cv-field{margin-bottom:14px}
+  .cv-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);
+    margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+  .cv-input{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 13px;
+    font-size:13px;color:var(--ink);outline:none;transition:border-color .15s}
+  .cv-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
+  .cv-acct-list{border:1.5px solid var(--line);border-radius:10px;max-height:280px;overflow-y:auto}
+  .cv-acct-item{display:flex;align-items:center;gap:10px;padding:9px 14px;
+    border-bottom:1px solid var(--line);cursor:pointer}
+  .cv-acct-item:last-child{border-bottom:none}
+  .cv-acct-item:hover{background:var(--accent-soft)}
+  .cv-acct-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);
+    cursor:pointer;flex-shrink:0}
+  .cv-acct-item label{cursor:pointer;flex:1;font-size:12.5px}
+  .cv-grp-hdr{padding:6px 14px;font-size:10.5px;font-weight:700;color:var(--muted);
+    background:var(--bg);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+  .cv-select-all{display:flex;align-items:center;gap:8px;padding:8px 14px;
+    border-bottom:1px solid var(--line);background:var(--bg)}
+  .cv-select-all label{font-size:11.5px;font-weight:600;cursor:pointer;color:var(--muted)}
+  .cv-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;
+    padding-top:14px;border-top:1px solid var(--line)}
+  .cv-btn{border:none;cursor:pointer;border-radius:9px;padding:8px 16px;font-size:12.5px;font-weight:600}
+  .cv-btn-primary{background:var(--accent);color:#fff}
+  .cv-btn-primary:hover{background:#5a4bd0}
+  .cv-btn-ghost{background:var(--line);color:var(--ink)}
+  .cv-btn-ghost:hover{background:#dde0e9}
+  .cv-btn-danger{background:#fde8ea;color:var(--neg);margin-right:auto}
+  .cv-btn-danger:hover{background:#fbd0d4}
+  /* Toast */
+  .v-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;border-radius:10px;padding:10px 20px;
+    font-size:13px;z-index:99999;opacity:0;transition:opacity .2s;pointer-events:none}
+  .v-toast.show{opacity:1}
+
+  /* ── Date Range Picker ─────────────────────────────────────────────── */
+  .date-picker-wrap{position:relative;display:inline-block}
+  .date-picker-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}
+  .date-picker-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .date-picker-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .date-picker-drop{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(10,12,30,.12);padding:12px;min-width:280px}
+  .date-presets{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px}
+  .date-preset{border:1px solid var(--line);background:#fff;border-radius:7px;padding:5px 9px;font-size:11.5px;font-weight:600;cursor:pointer;color:var(--muted);text-align:left}
+  .date-preset:hover,.date-preset.sel{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+  .date-range-inputs{display:flex;gap:8px;align-items:center;padding-top:8px;border-top:1px solid var(--line)}
+  .date-range-inputs input[type=date]{flex:1;border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:11.5px;color:var(--ink);outline:none}
+  .date-range-inputs input[type=date]:focus{border-color:var(--accent)}
+  .date-range-inputs span{color:var(--muted);font-size:12px;flex-shrink:0}
+  /* ── Multi-select accounts ─────────────────────────────────────────── */
+  .ms-wrap{position:relative;display:inline-block}
+  .ms-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap;min-width:130px}
+  .ms-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .ms-btn.has-filter{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .ms-drop{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(10,12,30,.12);max-height:300px;overflow-y:auto;min-width:220px;display:none}
+  .ms-drop.open{display:block}
+  .ms-item{display:flex;align-items:center;gap:9px;padding:8px 13px;cursor:pointer;font-size:12.5px;border-bottom:1px solid var(--line)}
+  .ms-item:last-child{border-bottom:none}
+  .ms-item:hover{background:var(--accent-soft)}
+  .ms-item input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+  .ms-item label{cursor:pointer;flex:1}
+  .ms-all{font-weight:700;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg)}
+  /* ── Transaction search ────────────────────────────────────────────── */
+  .txn-search{border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:12.5px;color:var(--ink);outline:none;width:220px}
+  .txn-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(108,92,231,.1)}
+
+  /* ── Editable descriptions ──────────────────────────────────────────── */
+  .desc-cell{cursor:text}
+  .desc-cell:hover td,.desc-cell:hover{background:rgba(29,78,216,.04)!important}
+  .desc-edited{color:var(--accent);font-style:italic}
+  .desc-revert{margin-left:5px;cursor:pointer;color:var(--muted);font-size:10px;vertical-align:middle;opacity:.7}
+  .desc-revert:hover{color:var(--neg);opacity:1}
+  .desc-input{width:100%;border:1.5px solid var(--accent);border-radius:5px;padding:2px 7px;font-size:12px;font-family:inherit;outline:none;background:#f0f7ff;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -160,7 +203,7 @@
       <a class="active dash-nav" data-scroll="overview">📊 Overview</a>
       <a class="dash-nav" data-scroll="accounts">🏦 Accounts</a>
       <a class="dash-nav" data-scroll="ledger">📄 Transactions</a>
-      <a class="admin-only" id="nav-users" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px" onclick="showUsersPanel()">👥 Users</a>
+      <a class="admin-only" href="/admin" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px">👥 User Management</a>
     </nav>
     <div class="who"><span class="av" id="who-av">RS</span><div><div style="font-weight:700">Rob's Expense Tracker</div><div style="color:var(--muted);font-size:11px">SimpleFIN feed</div></div></div>
   </aside>
@@ -170,24 +213,49 @@
       <div class="top-row">
         <h1 id="title">Cash flow <span>· All accounts</span></h1>
         <div class="controls">
-          <select id="f-period"></select>
-          <select id="f-account"></select>
+          <!-- Date range picker -->
+          <div class="date-picker-wrap" id="dp-wrap">
+            <button class="date-picker-btn" id="dp-btn" onclick="toggleDatePicker(event)">
+              <span>📅</span><span id="dp-label">Last 90 days</span>
+            </button>
+            <div class="date-picker-drop" id="dp-drop" style="display:none">
+              <div class="date-presets">
+                <button class="date-preset" data-preset="30" onclick="applyPreset(30)">Last 30 days</button>
+                <button class="date-preset" data-preset="60" onclick="applyPreset(60)">Last 60 days</button>
+                <button class="date-preset sel" data-preset="90" onclick="applyPreset(90)">Last 90 days</button>
+                <button class="date-preset" data-preset="180" onclick="applyPreset(180)">Last 6 months</button>
+                <button class="date-preset" data-preset="365" onclick="applyPreset(365)">Last 12 months</button>
+                <button class="date-preset" data-preset="0" onclick="applyPreset(0)">All time</button>
+              </div>
+              <div class="date-range-inputs">
+                <input type="date" id="dp-start" onchange="applyCustomRange()" />
+                <span>to</span>
+                <input type="date" id="dp-end" onchange="applyCustomRange()" />
+              </div>
+            </div>
+          </div>
+          <!-- Multi-select accounts -->
+          <div class="ms-wrap" id="ms-wrap">
+            <button class="ms-btn" id="ms-btn" onclick="toggleMsDrop(event)">
+              <span id="ms-label">All accounts</span><span style="margin-left:auto;opacity:.5">▾</span>
+            </button>
+            <div class="ms-drop" id="ms-drop" onclick="event.stopPropagation()">
+              <div class="ms-item ms-all" onclick="msToggleAll(event)">
+                <input type="checkbox" id="ms-chk-all" checked onchange="msToggleAll(event)" />
+                <label for="ms-chk-all">All accounts</label>
+              </div>
+              <div id="ms-list"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="toggle-group" id="group-toggle">
-          <button class="tgl on" data-g="all">All</button>
-          <button class="tgl" data-g="Personal">Personal</button>
-          <button class="tgl" data-g="PayDiverse/Elm">PayDiverse / Elm</button>
-          <button class="tgl" data-g="Celestra/Fortuna">Celestra / Fortuna</button>
-          <button class="tgl" data-g="Frank Personal">Frank Personal</button>
-        </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div id="views-bar" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"></div>
+        <button class="btn-create-view admin-only" onclick="openCreateViewModal()">+ Create View</button>
       </div>
     </div>
-    <div class="sub" id="sub">Use the entity toggle or change the period/account, or click a bar, slice, account, or category to drill in.</div>
 
     <div id="content" class="hidden">
-      <div class="note" id="data-note"></div>
       <div class="chips" id="chips"></div>
 
       <section id="overview">
@@ -197,11 +265,11 @@
         <div class="card kpi"><div class="lbl">Net Cash Flow</div><div class="val" id="k-net">$0</div><div class="spark" id="sp-net"></div></div>
         <div class="card kpi"><div class="lbl"># Transactions</div><div class="val" id="k-count">0</div><div class="spark" id="sp-count"></div></div>
       </div>
-      <div class="row2">
-        <div class="card">
+      <div class="card" style="margin-bottom:14px">
           <div class="panel-h"><div class="t">Income vs Expense — by month</div><div class="hint">click a bar to focus a month</div></div>
-          <div class="chartbox"><canvas id="barChart"></canvas></div>
+          <div class="chartbox" style="height:260px"><canvas id="barChart"></canvas></div>
         </div>
+        <div class="row2">
         <div class="card">
           <div class="panel-h"><div class="t">Spending by category</div><div class="hint">click to filter</div></div>
           <div class="donutwrap">
@@ -215,12 +283,30 @@
       </section>
 
       <section id="accounts" class="card" style="margin-bottom:16px">
-        <div class="panel-h"><div class="t">Accounts</div><div class="hint" id="acct-hint">net for the selected period · click to filter</div></div>
+        <div class="panel-h">
+          <div class="t">Accounts</div>
+          <div id="acct-group-filter" style="display:flex;gap:5px;align-items:center;flex-wrap:wrap"></div>
+        </div>
         <div id="acct-grid"></div>
+        </div><!-- end row2 -->
       </section>
 
       <section id="ledger" class="card">
-        <div class="panel-h"><div class="t">Transactions</div><div class="hint" id="ledger-count"></div></div>
+        <div class="panel-h" style="flex-wrap:wrap;gap:8px">
+          <div class="t" style="flex:none">Transactions</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap">
+            <input type="date" id="txn-date-start" title="Single date (exact) or start of range" style="border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--ink);outline:none" onchange="drawTable()" />
+            <span style="color:var(--muted);font-size:11px;flex-shrink:0">to</span>
+            <input type="date" id="txn-date-end" title="End of date range (optional)" style="border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--ink);outline:none" onchange="drawTable()" />
+            <input type="search" class="txn-search" id="txn-search" placeholder="Search description, payee, category…" oninput="drawTable()" style="width:240px" />
+          </div>
+          <div class="hint" id="ledger-count" style="flex-basis:100%;margin-top:-8px"></div>
+        </div>
+        <!-- Transaction summary + line chart -->
+        <div id="txn-summary" style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <div style="margin-bottom:16px;display:none" id="txn-chart-wrap">
+          <div style="position:relative;height:160px"><canvas id="lineChart"></canvas></div>
+        </div>
         <table>
           <thead><tr><th>Date</th><th>Account</th><th>Description</th><th>Category</th><th class="right">Amount</th></tr></thead>
           <tbody id="tbody"></tbody>
@@ -232,75 +318,15 @@
     <div id="loading" class="loading">Loading transactions…</div>
   </main>
 
-  <!-- User Management Panel -->
-  <div id="users-panel" class="um-panel main">
 
-    <div id="um-auth-gate" class="auth-gate" style="display:none">
-      <h3>🔐 Admin Access</h3>
-      <p>Enter the admin secret to manage users.</p>
-      <div class="form-group"><input type="password" id="um-secret-input" class="form-control" placeholder="Admin secret…" /></div>
-      <button class="btn btn-primary" style="width:100%" onclick="submitAdminAuth()">Unlock</button>
-      <p id="um-auth-err" style="color:var(--neg);font-size:12px;margin-top:10px;display:none">Incorrect secret.</p>
-    </div>
-
-    <div id="um-content" style="display:none">
-      <div class="um-topbar">
-        <h2>User Management</h2>
-        <button class="btn btn-primary" onclick="openUserModal()">+ New User</button>
-      </div>
-      <table class="um-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Accounts</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="users-tbody"><tr><td colspan="4" class="um-empty">Loading…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- User Create/Edit Modal -->
-  <div id="user-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUserModal()">
-    <div class="modal">
-      <h3 id="modal-title">New User</h3>
-      <input type="hidden" id="um-edit-id" value="" />
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="um-name" class="form-control" placeholder="e.g. Frank Sena" />
-      </div>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="um-username" class="form-control" placeholder="e.g. frank" autocomplete="off" />
-      </div>
-      <div class="form-group">
-        <label>Password <span style="font-weight:400;text-transform:none;letter-spacing:0">(leave blank to keep existing)</span></label>
-        <input type="password" id="um-password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
-      </div>
-      <div class="form-group">
-        <label>Visible Accounts</label>
-        <div class="acct-checklist" id="um-acct-list">Loading accounts…</div>
-      </div>
-      <div id="um-modal-err" style="color:var(--neg);font-size:12px;display:none;margin-bottom:8px"></div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeUserModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveUser()">Save User</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
-
-</div>
 
 <script>
 var ALL = [];
-var STATE = { period:'all', account:'all', category:null, page:1, group:'all' };
+var STATE = { period:'all', account:'all', category:null, page:1, group:'all', viewId:'all', viewAccounts:null, dateStart:null, dateEnd:null, selectedAccounts:[], acctGroup:'all' };
 var PAGE = 20;
 var lastSig = '';
+var CUSTOM_DESC = {};
+var CURRENT_USER = 'admin';
 var COLORS = ['#6c5ce7','#ef5b6b','#1bbf83','#f7a83b','#3b9bf7','#9b59d0','#19b3c9','#e0688f',
               '#7c8aa5','#56c08d','#d4a017','#b15bd0','#5b7cef','#e07a3b','#3bbf9b','#c95b7c','#8a93a8','#a7b0c4'];
 var usd = function(n){ return (n<0?'-$':'$') + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
@@ -310,17 +336,19 @@ var barChart, donutChart;
 var ACCT_GROUPS = {
   'PayDiverse/Elm': ['3000','9613','1360','1378','3292'],
   'Celestra/Fortuna': ['1007','6576','6852'],
-  'Frank Personal': ['8238','6469','9575','0928','5917','5150']
+  'Frank Personal': ['8238','6469','9575','0928','5917','5150','8619','1539','4005','1009','9225','566','728','3988','3438','3439','9785','340','707','btc wallet'],
+  'Perseverance': ['8808']
 };
 function getAccountGroup(name){
   var n = (name||'').toLowerCase();
+  if(n === 'account') return 'Frank Personal';
   for(var g in ACCT_GROUPS){
     var keys = ACCT_GROUPS[g];
     for(var i=0;i<keys.length;i++){
       if(n.indexOf(keys[i])!==-1) return g;
     }
   }
-  return 'Personal';
+  return "Rob's Personal";
 }
 
 var LIVE_BALANCES = {
@@ -351,42 +379,49 @@ var LIVE_BALANCES = {
 };
 var ALL_KNOWN_ACCOUNTS = Object.keys(LIVE_BALANCES);
 
+// Detect user view vs admin view
+var _viewToken = new URLSearchParams(window.location.search).get('token');
+if (_viewToken) document.documentElement.classList.add('user-view');
+
 window.onload = function(){
   var startDate = new Date();
-  startDate.setDate(startDate.getDate() - 90);
+  startDate.setDate(startDate.getDate() - 365); // fetch 1 year of history
   var sd = startDate.toISOString().split('T')[0];
-  fetch('/api/data?start_date=' + sd)
+  var url = '/api/data?start_date=' + sd + (_viewToken ? '&token=' + encodeURIComponent(_viewToken) : '');
+  fetch(url)
     .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(res){ onData(res); })
+    .then(function(res){
+      if(res.viewUser){
+        var n = res.viewUser.name;
+        var brand = document.querySelector('.brand');
+        if(brand) brand.innerHTML = '<span class="dot"></span> ' + esc(n) + " Dashboard";
+        var av = document.getElementById('who-av');
+        if(av) av.textContent = n.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+        var whoName = document.querySelector('.who div div');
+        if(whoName) whoName.textContent = n;
+      }
+      onData(res);
+    })
     .catch(function(e){ onErr(e); });
 };
 function onErr(e){ document.getElementById('loading').textContent = 'Error: ' + e.message; }
 
 function onData(res){
   ALL = res.rows || [];
+  if(res.viewUser){ CURRENT_USER = res.viewUser.name || 'user'; }
+  fetch('/api/desc-overrides').then(function(r){return r.json();}).then(function(d){CUSTOM_DESC=d||{};drawTable();}).catch(function(){});
   if(res.accounts){ LIVE_BALANCES = res.accounts; ALL_KNOWN_ACCOUNTS = Object.keys(LIVE_BALANCES); }
+  renderViewsBar();
+  renderAcctGroupFilter();
   document.getElementById('loading').classList.add('hidden');
   document.getElementById('content').classList.remove('hidden');
 
-  var months = Array.from(new Set(ALL.map(function(r){return r.month;}))).sort();
-  var pSel = document.getElementById('f-period');
-  pSel.innerHTML = '<option value="all">All dates</option>' + months.map(function(m){return '<option value="'+m+'">'+monthLabel(m)+'</option>';}).join('');
-  pSel.onchange = function(){ STATE.period=this.value; STATE.category=null; render(); };
+  // Set default date range to last 90 days on first load
+  if(STATE.dateStart === null) applyPreset(90);
+  // Populate multi-select account list
+  populateMsList();
 
-  document.getElementById('f-account').onchange = function(){
-    STATE.account=this.value; STATE.category=null; render();
-  };
-
-  document.getElementById('group-toggle').querySelectorAll('.tgl').forEach(function(btn){
-    btn.onclick = function(){
-      document.getElementById('group-toggle').querySelectorAll('.tgl').forEach(function(b){b.classList.remove('on');});
-      this.classList.add('on');
-      STATE.group = this.getAttribute('data-g');
-      STATE.account = 'all';
-      STATE.category = null;
-      render();
-    };
-  });
+  // Group toggle replaced by Create View system
 
   document.querySelectorAll('.nav a').forEach(function(a){
     a.onclick=function(){
@@ -396,11 +431,13 @@ function onData(res){
   });
   setView('overview');
 
-  var dr = months.length ? (months[0]+' → '+months[months.length-1]) : 'no data';
+  var allMonths = Array.from(new Set(ALL.map(function(r){return r.month;}))).sort();
+  var dr = allMonths.length ? (allMonths[0]+' → '+allMonths[allMonths.length-1]) : 'no data';
   var acctCount = Array.from(new Set(ALL.map(function(r){return r.account;}))).length;
-  document.getElementById('data-note').textContent =
+  var dataNoteEl = document.getElementById('data-note');
+  if(dataNoteEl){ dataNoteEl.textContent =
     'Date range available: ' + dr + ' · ' + ALL.length + ' transactions across ' + acctCount +
-    ' accounts. (SimpleFIN/banks return ~90 days of history.) Generated ' + (res.generatedAt||'');
+    ' accounts. (SimpleFIN/banks return ~90 days of history.) Generated ' + (res.generatedAt||''); }
 
   render();
 }
@@ -416,9 +453,10 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 
 function baseFiltered(){
   return ALL.filter(function(r){
-    if(STATE.period!=='all' && r.month!==STATE.period) return false;
-    if(STATE.account!=='all' && r.account!==STATE.account) return false;
-    if(STATE.group!=='all' && getAccountGroup(r.account)!==STATE.group) return false;
+    if(STATE.viewAccounts && STATE.viewAccounts.indexOf(r.account)===-1) return false;
+    if(STATE.dateStart && r.date < STATE.dateStart) return false;
+    if(STATE.dateEnd && r.date > STATE.dateEnd) return false;
+    if(STATE.selectedAccounts.length > 0 && STATE.selectedAccounts.indexOf(r.account)===-1) return false;
     return true;
   });
 }
@@ -427,45 +465,45 @@ function render(){
   var groupAccts = Array.from(new Set(ALL
     .filter(function(r){ return STATE.group==='all' || getAccountGroup(r.account)===STATE.group; })
     .map(function(r){return r.account;}))).sort();
-  var aSel = document.getElementById('f-account');
-  aSel.innerHTML = '<option value="all">All accounts</option>' + groupAccts.map(function(a){
-    return '<option value="'+esc(a)+'"'+(a===STATE.account?' selected':'')+'>'+esc(a)+'</option>';
-  }).join('');
-  if(STATE.account!=='all' && groupAccts.indexOf(STATE.account)===-1){
-    STATE.account='all'; aSel.value='all';
-  }
+  // Multi-select: update ms button label
+  updateMsBtn();
 
   var rows = baseFiltered();
   var spent  = rows.filter(function(r){return r.amount<0;}).reduce(function(s,r){return s+(-r.amount);},0);
-  var income = rows.filter(function(r){return r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);
-  var net = income - spent;
-  document.getElementById('k-spent').textContent  = usd(spent);
+  // KPI cards follow the selected category; the donut below keeps using the full, unfiltered set.
+  var kpiRows = STATE.category ? rows.filter(function(r){return r.category===STATE.category;}) : rows;
+  var kpiSpent  = kpiRows.filter(function(r){return r.amount<0;}).reduce(function(s,r){return s+(-r.amount);},0);
+  var income = kpiRows.filter(function(r){return r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);
+  var net = income - kpiSpent;
+  document.getElementById('k-spent').textContent  = usd(kpiSpent);
   document.getElementById('k-income').textContent = usd(income);
   document.getElementById('k-net').textContent    = (net>=0?'+':'') + usd(net);
   document.getElementById('k-net').style.color    = net>=0 ? 'var(--pos)' : 'var(--neg)';
-  document.getElementById('k-count').textContent  = rows.length.toLocaleString();
+  document.getElementById('k-count').textContent  = kpiRows.length.toLocaleString();
 
   var byAcct = ALL.filter(function(r){
-    if(STATE.account!=='all' && r.account!==STATE.account) return false;
-    if(STATE.group!=='all' && getAccountGroup(r.account)!==STATE.group) return false;
+    if(STATE.viewAccounts && STATE.viewAccounts.indexOf(r.account)===-1) return false;
+    if(STATE.selectedAccounts.length > 0 && STATE.selectedAccounts.indexOf(r.account)===-1) return false;
     return true;
   });
+  var byAcctCat = STATE.category ? byAcct.filter(function(r){return r.category===STATE.category;}) : byAcct;
   var ms = Array.from(new Set(byAcct.map(function(r){return r.month;}))).sort();
-  spark('sp-spent',  ms.map(function(m){return byAcct.filter(function(r){return r.month===m&&r.amount<0;}).reduce(function(s,r){return s-r.amount;},0);}), ms);
-  spark('sp-income', ms.map(function(m){return byAcct.filter(function(r){return r.month===m&&r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);}), ms);
-  spark('sp-net',    ms.map(function(m){return byAcct.filter(function(r){return r.month===m;}).reduce(function(s,r){return s+r.amount;},0);}), ms);
-  spark('sp-count',  ms.map(function(m){return byAcct.filter(function(r){return r.month===m;}).length;}), ms);
+  spark('sp-spent',  ms.map(function(m){return byAcctCat.filter(function(r){return r.month===m&&r.amount<0;}).reduce(function(s,r){return s-r.amount;},0);}), ms);
+  spark('sp-income', ms.map(function(m){return byAcctCat.filter(function(r){return r.month===m&&r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);}), ms);
+  spark('sp-net',    ms.map(function(m){return byAcctCat.filter(function(r){return r.month===m;}).reduce(function(s,r){return s+r.amount;},0);}), ms);
+  spark('sp-count',  ms.map(function(m){return byAcctCat.filter(function(r){return r.month===m;}).length;}), ms);
 
   drawBar(byAcct);
   drawDonut(rows, spent);
   drawAccounts();
   drawTable();
   drawChips();
+  renderAcctGroupFilter();
 
-  var grpLabel  = STATE.group==='all' ? 'All accounts' : STATE.group;
-  var acctLabel = STATE.account==='all' ? '' : ' · '+esc(STATE.account);
-  var perLabel  = STATE.period==='all' ? '' : ' · '+monthLabel(STATE.period);
-  document.getElementById('title').innerHTML = 'Cash flow <span>· ' + grpLabel + acctLabel + perLabel + '</span>';
+  var grpLabel = STATE.viewId !== 'all' ? ('View: ' + (getViews().find(function(v){ return v.id===STATE.viewId; })||{}).name || '') : 'All accounts';
+  var acctLabel = STATE.selectedAccounts.length > 0 ? (' · ' + STATE.selectedAccounts.length + ' accts') : '';
+  var dateLabel = (STATE.dateStart||STATE.dateEnd) ? (' · ' + (STATE.dateStart||'') + (STATE.dateEnd ? ' → '+STATE.dateEnd : '')) : '';
+  document.getElementById('title').innerHTML = 'Cash flow <span>' + acctLabel + dateLabel + '</span>';
 }
 
 function spark(id, vals, months){
@@ -480,8 +518,11 @@ function spark(id, vals, months){
 
 function drawBar(rows){
   var months = Array.from(new Set(rows.map(function(r){return r.month;}))).sort();
-  var inc = months.map(function(m){return rows.filter(function(r){return r.month===m&&r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);});
-  var exp = months.map(function(m){return rows.filter(function(r){return r.month===m&&r.amount<0;}).reduce(function(s,r){return s-r.amount;},0);});
+  // Default to last 6 months; follow date range when one is set
+  var displayMonths = months;
+  if(!STATE.dateStart && !STATE.dateEnd && months.length > 6){ displayMonths = months.slice(-6); }
+  var inc = displayMonths.map(function(m){return rows.filter(function(r){return r.month===m&&r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);});
+  var exp = displayMonths.map(function(m){return rows.filter(function(r){return r.month===m&&r.amount<0;}).reduce(function(s,r){return s-r.amount;},0);});
   var sel = months.map(function(m){return STATE.period===m;});
   var ctx = document.getElementById('barChart');
   if(barChart) barChart.destroy();
@@ -525,18 +566,16 @@ function drawDonut(rows, spent){
 function toggleCat(c){ STATE.category=(STATE.category===c?null:c); render(); }
 
 function drawAccounts(){
-  var periodRows = ALL.filter(function(r){
-    if(STATE.period!=='all' && r.month!==STATE.period) return false;
-    return true;
-  });
+  var periodRows = baseFiltered();
   var container = document.getElementById('acct-grid');
-  if(STATE.group !== 'all'){
-    var groupRows = periodRows.filter(function(r){ return getAccountGroup(r.account)===STATE.group; });
-    var knownInGrp = ALL_KNOWN_ACCOUNTS.filter(function(a){ return getAccountGroup(a)===STATE.group; });
+  var acctGroupFilter = STATE.acctGroup || 'all';
+  if(acctGroupFilter !== 'all'){
+    var groupRows = periodRows.filter(function(r){ return getAccountGroup(r.account)===acctGroupFilter; });
+    var knownInGrp = ALL_KNOWN_ACCOUNTS.filter(function(a){ return getAccountGroup(a)===acctGroupFilter; });
     var accts = Array.from(new Set(groupRows.map(function(r){return r.account;}).concat(knownInGrp))).sort();
     container.innerHTML = '<div class="acct-grid">' + accts.map(function(a){ return renderAcctCard(a, groupRows); }).join('') + '</div>';
   } else {
-    var groupOrder = ['Personal','PayDiverse/Elm','Celestra/Fortuna','Frank Personal'];
+    var groupOrder = ["Rob's Personal",'Perseverance','PayDiverse/Elm','Celestra/Fortuna','Frank Personal'];
     container.innerHTML = groupOrder.map(function(grp){
       var grpRows = periodRows.filter(function(r){ return getAccountGroup(r.account)===grp; });
       var knownInGrp2 = ALL_KNOWN_ACCOUNTS.filter(function(a){ return getAccountGroup(a)===grp; });
@@ -568,8 +607,22 @@ function pickAcct(a){ STATE.account=(STATE.account===a?'all':a); STATE.category=
 function drawTable(){
   var rows = baseFiltered();
   if(STATE.category) rows = rows.filter(function(r){return r.category===STATE.category;});
+  var searchTerm = (document.getElementById('txn-search') ? document.getElementById('txn-search').value : '').toLowerCase().trim();
+  var txnDateStart = document.getElementById('txn-date-start') ? document.getElementById('txn-date-start').value : '';
+  var txnDateEnd = document.getElementById('txn-date-end') ? document.getElementById('txn-date-end').value : '';
+  // If only one date: exact match. If both: date range.
+  if(txnDateStart && txnDateEnd){
+    rows = rows.filter(function(r){ return r.date >= txnDateStart && r.date <= txnDateEnd; });
+  } else if(txnDateStart){
+    rows = rows.filter(function(r){ return r.date === txnDateStart; });
+  } else if(txnDateEnd){
+    rows = rows.filter(function(r){ return r.date === txnDateEnd; });
+  }
+  if(searchTerm) rows = rows.filter(function(r){
+    return (r.description||'').toLowerCase().indexOf(searchTerm)!==-1;
+  });
   rows = rows.slice().sort(function(a,b){return a.date<b.date?1:-1;});
-  var sig = STATE.period+'|'+STATE.account+'|'+STATE.category+'|'+STATE.group;
+  var sig = (STATE.dateStart||'')+'|'+(STATE.dateEnd||'')+'|'+STATE.selectedAccounts.join(',')+'|'+STATE.category+'|'+STATE.group+'|'+searchTerm;
   if(sig!==lastSig){ STATE.page=1; lastSig=sig; }
   var total  = rows.length;
   var pages  = Math.max(1, Math.ceil(total/PAGE));
@@ -577,13 +630,32 @@ function drawTable(){
   if(STATE.page<1) STATE.page=1;
   var start    = (STATE.page-1)*PAGE;
   var pageRows = rows.slice(start, start+PAGE);
-  document.getElementById('ledger-count').textContent = total + ' rows';
+  // Show count with search context
+  var countEl = document.getElementById('ledger-count');
+  if(countEl){
+    var countTxt = total + ' transaction' + (total!==1?'s':'');
+    if(searchTerm) countTxt += ' matching "'+searchTerm+'"';
+    if(txnDateStart||txnDateEnd) countTxt += ' in selected date range';
+    countEl.textContent = total > 0 ? countTxt : '';
+  }
+  drawLedgerChart(rows);
   var tb = document.getElementById('tbody');
+  if(!tb){ return; }
+  if(pageRows.length === 0){
+    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);font-style:italic">'+(searchTerm||txnDateStart||txnDateEnd ? 'No matching transactions. Try a different keyword or date.' : 'No transactions in this period.')+'</td></tr>';
+    drawPager(0); return;
+  }
   tb.innerHTML = pageRows.map(function(r){
-    return '<tr><td>'+r.date+'</td><td>'+esc(r.account)+'</td><td title="'+esc(r.description)+'">'+esc(r.description||r.payee)+'</td>'+
+    var origDesc = r.description || r.payee || '';
+    var txnKey = r.date+'||'+r.amount.toFixed(2)+'||'+origDesc.replace(/\|/g,'_').slice(0,40);
+    var customDesc = CUSTOM_DESC[txnKey];
+    var displayDesc = customDesc || origDesc;
+    var isEdited = !!customDesc;
+    var descTd = '<td class="desc-cell'+(isEdited?' desc-edited':'')+'" data-key="'+esc(txnKey)+'" data-orig="'+esc(origDesc)+'" title="'+(isEdited?'Original: '+esc(origDesc):esc(origDesc))+'" onclick="editDesc(this)">'+esc(displayDesc)+(isEdited?'<span class="desc-revert" onclick="revertDesc(event,this)" title="Revert to original">↩</span>':'')+'</td>';
+    return '<tr><td>'+r.date+'</td><td>'+esc(r.account)+'</td>'+descTd+
       '<td><span class="tag">'+esc(r.category)+'</span></td>'+
       '<td class="right '+(r.amount<0?'amt-neg':'amt-pos')+'">'+usd(r.amount)+'</td></tr>';
-  }).join('') || '<tr><td colspan="5" style="color:var(--muted)">No transactions in range.</td></tr>';
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);font-style:italic">'+(searchTerm||txnDateStart||txnDateEnd ? 'No matching transactions. Try a different keyword or date.' : 'No transactions in this period.')+'</td></tr>';
   drawPager(total, pages, start, pageRows.length);
 }
 
@@ -604,305 +676,448 @@ function drawPager(total, pages, start, shown){
 
 function drawChips(){
   var c=[];
-  if(STATE.group!=='all') c.push(['Entity', STATE.group,
-    "STATE.group='all';" +
-    "document.getElementById('group-toggle').querySelectorAll('.tgl').forEach(function(b){b.classList.remove('on')});" +
-    "document.getElementById('group-toggle').querySelector('[data-g=all]').classList.add('on');" +
-    "STATE.account='all';"]);
-  if(STATE.period!=='all')  c.push(['Period',   monthLabel(STATE.period),  "STATE.period='all';document.getElementById('f-period').value='all'"]);
-  if(STATE.account!=='all') c.push(['Account',  STATE.account,             "STATE.account='all';document.getElementById('f-account').value='all'"]);
-  if(STATE.category)        c.push(['Category', STATE.category,            "STATE.category=null"]);
+  if(STATE.viewId !== 'all'){
+    var vn = (getViews().find(function(v){return v.id===STATE.viewId;})||{}).name||STATE.viewId;
+    c.push(['View', vn, "activateView('all')"]);
+  }
+  if(STATE.dateStart||STATE.dateEnd){
+    var dl = (STATE.dateStart||'') + (STATE.dateEnd ? ' to '+STATE.dateEnd : '');
+    c.push(['Date', dl, "STATE.dateStart=null;STATE.dateEnd=null;applyPreset(0)"]);
+  }
+  if(STATE.selectedAccounts.length > 0){
+    c.push(['Accounts', STATE.selectedAccounts.length+' selected', "STATE.selectedAccounts=[];updateMsBtn();populateMsList()"]);
+  }
+  if(STATE.acctGroup && STATE.acctGroup!=='all'){
+    c.push(['Group', STATE.acctGroup, "STATE.acctGroup='all';renderAcctGroupFilter()"]);
+  }
+  if(STATE.category) c.push(['Category', STATE.category, "STATE.category=null"]);
   var box = document.getElementById('chips');
-  box.innerHTML = c.map(function(x){
-    return '<span class="chip"><b>'+x[0]+':</b> '+esc(x[1])+' <span class="x" onclick="'+x[2]+';render()">✕</span></span>';
-  }).join('') + (c.length ?
-    '<span class="chip" style="background:#fff;border:1px solid var(--line);color:var(--muted)" onclick="'+
-    "STATE={period:'all',account:'all',category:null,page:1,group:'all'};"+
-    "document.getElementById('f-period').value='all';document.getElementById('f-account').value='all';"+
-    "document.getElementById('group-toggle').querySelectorAll('.tgl').forEach(function(b){b.classList.remove('on')});"+
-    "document.getElementById('group-toggle').querySelector('[data-g=all]').classList.add('on');"+
-    "render()\">Reset all</span>" : '');
+  if(!box) return;
+  var chipHtml = c.map(function(x){
+    return '<span class="chip"><b>'+x[0]+':</b> '+esc(x[1])+' <span class="x" onclick="'+esc(x[2])+';render()">x</span></span>';
+  }).join('');
+  if(c.length){
+    chipHtml += '<span class="chip" style="background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;font-weight:700" onclick="resetAllFilters()">Reset all</span>';
+  }
+  box.innerHTML = chipHtml;
 }
 
-// ── User Management ──────────────────────────────────────────────────────────
-var IS_ADMIN_VIEW = !new URLSearchParams(window.location.search).get('token');
-var ADMIN_SECRET_KEY = 'celestra_admin_secret';
-var _usersCache = null;
+function resetAllFilters(){
+  STATE.period = 'all';
+  STATE.account = 'all';
+  STATE.category = null;
+  STATE.page = 1;
+  STATE.group = 'all';
+  STATE.viewId = 'all';
+  STATE.viewAccounts = null;
+  STATE.dateStart = null;
+  STATE.dateEnd = null;
+  STATE.selectedAccounts = [];
+  STATE.acctGroup = 'all';
+  // Reset date picker UI
+  var dpStart = document.getElementById('dp-start');
+  var dpEnd = document.getElementById('dp-end');
+  if(dpStart) dpStart.value = '';
+  if(dpEnd) dpEnd.value = '';
+  var dpLabel = document.getElementById('dp-label');
+  if(dpLabel) dpLabel.textContent = 'All time';
+  var dpBtn = document.getElementById('dp-btn');
+  if(dpBtn) dpBtn.classList.remove('active');
+  document.querySelectorAll('.date-preset').forEach(function(b){ b.classList.remove('sel'); });
+  var allPreset = document.querySelector('.date-preset[data-preset="0"]');
+  if(allPreset) allPreset.classList.add('sel');
+  // Reset txn date fields
+  var ts = document.getElementById('txn-date-start');
+  var te = document.getElementById('txn-date-end');
+  if(ts) ts.value = '';
+  if(te) te.value = '';
+  // Reset txn search
+  var tsearch = document.getElementById('txn-search');
+  if(tsearch) tsearch.value = '';
+  // Reset multi-select accounts
+  updateMsBtn();
+  populateMsList();
+  // Reset group filter
+  renderAcctGroupFilter();
+  // Reset views bar
+  renderViewsBar();
+  render();
+}
 
-// Apply user-view class to body if token present
-if (!IS_ADMIN_VIEW) document.documentElement.classList.add('user-view');
+// ── Create View System ───────────────────────────────────────────────────────
+var VIEWS_KEY = 'celestra_views';
+var _editingViewId = null;
 
-// Update window.onload to pass token and show user name
-(function(){
-  var origOnload = window.onload;
-  window.onload = function(){
-    var params = new URLSearchParams(window.location.search);
-    var token = params.get('token');
-    var startDate = new Date();
-    startDate.setDate(startDate.getDate() - 90);
-    var sd = startDate.toISOString().split('T')[0];
-    var url = '/api/data?start_date=' + sd + (token ? '&token=' + encodeURIComponent(token) : '');
-    fetch(url)
-      .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(res){
-        if(res.viewUser){
-          // User view: update brand/who
-          var n = res.viewUser.name;
-          document.querySelector('.brand').innerHTML = '<span class="dot"></span> ' + esc(n) + ' Dashboard';
-          var av = document.getElementById('who-av');
-          if(av) av.textContent = n.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
-          var whoName = document.querySelector('.who div div:first-child');
-          if(whoName) whoName.textContent = n;
-        }
-        onData(res);
-      })
-      .catch(function(e){ onErr(e); });
-  };
-})();
+function getViews(){ try{ return JSON.parse(localStorage.getItem(VIEWS_KEY)||'[]'); }catch{ return []; } }
+function saveViews(v){ localStorage.setItem(VIEWS_KEY, JSON.stringify(v)); }
 
-// ── Admin auth ───────────────────────────────────────────────────────────────
-function getAdminSecret(){ return sessionStorage.getItem(ADMIN_SECRET_KEY) || ''; }
-function setAdminSecret(s){ sessionStorage.setItem(ADMIN_SECRET_KEY, s); }
+function renderViewsBar(){
+  var views = getViews();
+  var bar = document.getElementById('views-bar');
+  if(!bar) return;
+  var chips = views.map(function(v){
+    var active = STATE.viewId === v.id;
+    var safeId = String(v.id).replace(/"/g, '');
+    return '<button class="view-chip'+(active?' active':'\')+'" data-vid="'+safeId+'" onclick="activateView(this.dataset.vid)">'+esc(v.name)+'</button>';
+  }).join('');
+  var allActive = STATE.viewId === 'all';
+  bar.innerHTML = chips; // no "All Accounts" chip — clicking active view deactivates it
+}
 
-function showUsersPanel(){
-  // Hide dashboard sections
-  document.getElementById('content').classList.add('hidden');
-  document.getElementById('loading').classList.add('hidden');
-  // Show users panel
-  var panel = document.getElementById('users-panel');
-  panel.classList.add('active');
-  document.querySelectorAll('.dash-nav').forEach(function(a){ a.classList.remove('active'); });
-  document.getElementById('nav-users').classList.add('active');
-  // Check auth
-  if(getAdminSecret()){
-    showUmContent();
+function activateView(id){
+  // Toggle: clicking active view deactivates it (returns to all accounts)
+  if(STATE.viewId === id && id !== 'all'){
+    STATE.viewId = 'all';
+    STATE.viewAccounts = null;
   } else {
-    document.getElementById('um-auth-gate').style.display = 'block';
-    document.getElementById('um-content').style.display = 'none';
-    setTimeout(function(){ document.getElementById('um-secret-input').focus(); }, 100);
+    STATE.viewId = id;
+    if(id === 'all'){
+      STATE.viewAccounts = null;
+    } else {
+      var views = getViews();
+      var v = views.find(function(x){ return x.id===id; });
+      STATE.viewAccounts = v ? (v.accounts||[]) : null;
+    }
+  }
+  STATE.group = 'all';
+  STATE.selectedAccounts = [];
+  STATE.category = null;
+  STATE.page = 1;
+  renderViewsBar();
+  updateMsBtn();
+  render();
+}
+
+function openCreateViewModal(viewId){
+  _editingViewId = viewId || null;
+  var views = getViews();
+  var existing = viewId ? views.find(function(v){ return v.id===viewId; }) : null;
+
+  document.getElementById('cv-modal-title').textContent = existing ? 'Edit View' : 'Create View';
+  document.getElementById('cv-name').value = existing ? existing.name : '';
+  document.getElementById('cv-err').style.display = 'none';
+  document.getElementById('cv-delete-btn').style.display = existing ? 'block' : 'none';
+
+  // Open modal immediately
+  document.getElementById('cv-modal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('cv-name').focus(); }, 80);
+
+  var selected = existing ? (existing.accounts||[]) : [];
+  var allAccounts = Object.keys(LIVE_BALANCES || {}).sort();
+  if(allAccounts.length > 0){
+    buildCvChecklist(allAccounts, selected);
+  } else {
+    document.getElementById('cv-acct-list').innerHTML = '<div style="padding:14px;text-align:center;color:var(--muted)">Loading accounts…</div>';
+    var yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    fetch('/api/data?start_date='+yesterday.toISOString().split('T')[0])
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        LIVE_BALANCES = data.accounts || LIVE_BALANCES;
+        ALL_KNOWN_ACCOUNTS = Object.keys(LIVE_BALANCES).sort();
+        buildCvChecklist(ALL_KNOWN_ACCOUNTS, selected);
+      })
+      .catch(function(){
+        document.getElementById('cv-acct-list').innerHTML = '<div style="padding:14px;color:var(--neg);text-align:center">Could not load accounts. Please try again.</div>';
+      });
   }
 }
 
-function hideDashPanel(){
-  document.getElementById('users-panel').classList.remove('active');
-  document.getElementById('nav-users').classList.remove('active');
-  document.getElementById('content').classList.remove('hidden');
-}
-
-// Wire dash nav items to hide users panel
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.dash-nav').forEach(function(a){
-    a.addEventListener('click', function(){
-      document.querySelectorAll('.nav a').forEach(function(x){ x.classList.remove('active'); });
-      a.classList.add('active');
-      hideDashPanel();
-    });
-  });
-  document.getElementById('um-secret-input').addEventListener('keydown', function(e){
-    if(e.key === 'Enter') submitAdminAuth();
-  });
-});
-
-function submitAdminAuth(){
-  var s = document.getElementById('um-secret-input').value.trim();
-  if(!s) return;
-  // Test the secret against the API
-  fetch('/api/users', { headers: { 'Authorization': 'Bearer ' + s } })
-    .then(function(r){
-      if(r.status === 401){ showAuthError(); return null; }
-      return r.json();
-    })
-    .then(function(data){
-      if(!data) return;
-      setAdminSecret(s);
-      document.getElementById('um-secret-input').value = '';
-      showUmContent(data.users);
-    })
-    .catch(function(){ showAuthError(); });
-}
-
-function showAuthError(){
-  var err = document.getElementById('um-auth-err');
-  err.style.display = 'block';
-  setTimeout(function(){ err.style.display = 'none'; }, 3000);
-}
-
-function showUmContent(preloaded){
-  document.getElementById('um-auth-gate').style.display = 'none';
-  document.getElementById('um-content').style.display = 'block';
-  if(preloaded){ renderUsersTable(preloaded); _usersCache = preloaded; }
-  else loadUsers();
-}
-
-// ── Users CRUD ───────────────────────────────────────────────────────────────
-function apiUsers(method, path, body){
-  return fetch('/api/users' + (path||''), {
-    method: method || 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + getAdminSecret(),
-      'Content-Type': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  }).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||r.status); return j; }); });
-}
-
-function loadUsers(){
-  document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" class="um-empty">Loading…</td></tr>';
-  apiUsers('GET').then(function(data){
-    _usersCache = data.users || [];
-    renderUsersTable(_usersCache);
-  }).catch(function(e){ showToast('Error: ' + e.message); });
-}
-
-function renderUsersTable(users){
-  var tbody = document.getElementById('users-tbody');
-  if(!users || !users.length){
-    tbody.innerHTML = '<tr><td colspan="4" class="um-empty">No users yet. Click "+ New User" to create one.</td></tr>';
+function buildCvChecklist(accounts, selected){
+  var list = document.getElementById('cv-acct-list');
+  if(!accounts.length){
+    list.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px">Load the dashboard first to see accounts.</div>';
     return;
   }
-  tbody.innerHTML = users.map(function(u){
-    var acctCount = (u.allowed_accounts||[]).length;
-    var link = window.location.origin + '/?token=' + u.token;
-    return '<tr>' +
-      '<td><strong>' + esc(u.name) + '</strong></td>' +
-      '<td style="color:var(--muted)">' + esc(u.username) + '</td>' +
-      '<td><span class="badge">' + acctCount + ' account' + (acctCount!==1?'s':'') + '</span></td>' +
-      '<td><div class="um-actions">' +
-        '<button class="btn btn-ghost btn-sm" onclick="copyLink(' + JSON.stringify(link) + ')">🔗 Copy Link</button>' +
-        '<button class="btn btn-ghost btn-sm" onclick="openUserModal(' + JSON.stringify(u.id) + ')">Edit</button>' +
-        '<button class="btn btn-danger btn-sm" onclick="deleteUser(' + JSON.stringify(u.id) + ',' + JSON.stringify(u.name) + ')">Delete</button>' +
-      '</div></td>' +
-    '</tr>';
+  var grouped = {};
+  accounts.forEach(function(name){
+    var g = getAccountGroup(name);
+    if(!grouped[g]) grouped[g] = [];
+    grouped[g].push(name);
+  });
+  var grpOrder = ["Rob's Personal",'Perseverance','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'];
+  Object.keys(grouped).forEach(function(g){ if(grpOrder.indexOf(g)===-1) grpOrder.push(g); });
+  var allSel = selected.length === accounts.length;
+  var html = '<div class="cv-select-all">'+
+    '<input type="checkbox" id="cv-chk-all" onchange="cvToggleAll(this)"'+(allSel?' checked':'')+'>'+
+    '<label for="cv-chk-all">Select all accounts</label></div>';
+  grpOrder.forEach(function(grp){
+    if(!grouped[grp]||!grouped[grp].length) return;
+    html += '<div class="cv-grp-hdr">'+esc(grp)+'</div>';
+    grouped[grp].forEach(function(name){
+      var id = 'cvc_'+name.replace(/[^a-z0-9]/gi,'_');
+      var chk = selected.indexOf(name)!==-1;
+      html += '<div class="cv-acct-item">'+
+        '<input type="checkbox" id="'+id+'" value="'+esc(name)+'"'+(chk?' checked':'')+' onchange="cvUpdateAll()">'+
+        '<label for="'+id+'">'+esc(name)+'</label></div>';
+    });
+  });
+  list.innerHTML = html;
+}
+
+function cvToggleAll(cb){
+  document.querySelectorAll('#cv-acct-list input[type=checkbox]:not(#cv-chk-all)').forEach(function(c){ c.checked=cb.checked; });
+}
+function cvUpdateAll(){
+  var all = document.querySelectorAll('#cv-acct-list input[type=checkbox]:not(#cv-chk-all)');
+  var chk = document.querySelectorAll('#cv-acct-list input[type=checkbox]:not(#cv-chk-all):checked');
+  var cb = document.getElementById('cv-chk-all');
+  if(cb) cb.checked = all.length === chk.length;
+}
+
+function closeCreateViewModal(){
+  document.getElementById('cv-modal').style.display = 'none';
+  _editingViewId = null;
+}
+
+function saveView(){
+  var name = (document.getElementById('cv-name').value||'').trim();
+  if(!name){ var e=document.getElementById('cv-err'); e.textContent='Please enter a view name.'; e.style.display='block'; return; }
+  var checked = document.querySelectorAll('#cv-acct-list input[type=checkbox]:not(#cv-chk-all):checked');
+  var accounts = Array.from(checked).map(function(c){ return c.value; });
+  if(!accounts.length){ var e=document.getElementById('cv-err'); e.textContent='Select at least one account.'; e.style.display='block'; return; }
+
+  var views = getViews();
+  if(_editingViewId){
+    var idx = views.findIndex(function(v){ return v.id===_editingViewId; });
+    if(idx!==-1){ views[idx].name=name; views[idx].accounts=accounts; }
+  } else {
+    views.push({ id: 'v_'+Date.now(), name:name, accounts:accounts });
+  }
+  saveViews(views);
+  closeCreateViewModal();
+  renderViewsBar();
+  showVToast('View "'+ name +'" saved');
+}
+
+function deleteCurrentView(){
+  if(!_editingViewId) return;
+  var views = getViews().filter(function(v){ return v.id!==_editingViewId; });
+  saveViews(views);
+  if(STATE.viewId === _editingViewId) activateView('all');
+  closeCreateViewModal();
+  renderViewsBar();
+  showVToast('View deleted');
+}
+
+function showVToast(msg){
+  var t = document.getElementById('v-toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+// Render views bar after data loads
+var _origOnData = typeof onData === 'function' ? onData : null;
+// Wrap onData to also render views bar
+if(window.addEventListener){
+  window.addEventListener('load', function(){
+    // Hook into existing onData
+    var orig = window.onData;
+    if(orig){
+      window.onData = function(res){
+        orig(res);
+        renderViewsBar();
+      };
+    }
+  });
+}
+
+// ── Date Range Picker ─────────────────────────────────────────────────────────
+function toggleDatePicker(e){ e.stopPropagation(); var d=document.getElementById('dp-drop'); d.style.display=d.style.display==='none'?'block':'none'; }
+document.addEventListener('click',function(e){
+  var dpWrap=document.getElementById('dp-wrap');
+  var msWrap=document.getElementById('ms-wrap');
+  if(!dpWrap||!dpWrap.contains(e.target)){ var d=document.getElementById('dp-drop'); if(d) d.style.display='none'; }
+  if(!msWrap||!msWrap.contains(e.target)){ var m=document.getElementById('ms-drop'); if(m) m.classList.remove('open'); }
+});
+
+function applyPreset(days){
+  var today = new Date();
+  var todayStr = today.toISOString().split('T')[0];
+  document.querySelectorAll('.date-preset').forEach(function(b){ b.classList.remove('sel'); });
+  var btn = document.querySelector('.date-preset[data-preset="'+days+'"]');
+  if(btn) btn.classList.add('sel');
+  if(days === 0){
+    STATE.dateStart = null; STATE.dateEnd = null;
+    document.getElementById('dp-label').textContent = 'All time';
+    document.getElementById('dp-start').value = '';
+    document.getElementById('dp-end').value = '';
+  } else {
+    var from = new Date(today); from.setDate(from.getDate() - days);
+    STATE.dateStart = from.toISOString().split('T')[0];
+    STATE.dateEnd = todayStr;
+    document.getElementById('dp-start').value = STATE.dateStart;
+    document.getElementById('dp-end').value = STATE.dateEnd;
+    document.getElementById('dp-label').textContent = 'Last '+days+' days';
+  }
+  document.getElementById('dp-btn').classList.toggle('active', days !== 0);
+  document.getElementById('dp-drop').style.display = 'none';
+  STATE.page = 1;
+  render();
+}
+
+function applyCustomRange(){
+  var s = document.getElementById('dp-start').value;
+  var e = document.getElementById('dp-end').value;
+  STATE.dateStart = s || null;
+  STATE.dateEnd = e || null;
+  document.querySelectorAll('.date-preset').forEach(function(b){ b.classList.remove('sel'); });
+  var label = (s && e) ? (s + ' → ' + e) : (s ? 'From '+s : (e ? 'To '+e : 'All time'));
+  document.getElementById('dp-label').textContent = label;
+  document.getElementById('dp-btn').classList.toggle('active', !!(s||e));
+  STATE.page = 1;
+  render();
+}
+
+// ── Multi-select accounts ─────────────────────────────────────────────────────
+function toggleMsDrop(e){ e.stopPropagation(); document.getElementById('ms-drop').classList.toggle('open'); }
+
+function populateMsList(){
+  var allAccts = Object.keys(LIVE_BALANCES||{}).sort();
+  var list = document.getElementById('ms-list');
+  if(!list) return;
+  list.innerHTML = allAccts.map(function(a){
+    var safeA = esc(a);
+    var checked = STATE.selectedAccounts.length===0 || STATE.selectedAccounts.indexOf(a)!==-1;
+    return '<div class="ms-item"><input type="checkbox" data-acct="'+safeA+'" '+(checked?'checked':'')+' onchange="msChanged()"><label>'+safeA+'</label></div>';
+  }).join('');
+  updateMsBtn();
+}
+
+function msToggleAll(e){
+  e.stopPropagation();
+  var allChecked = document.getElementById('ms-chk-all').checked;
+  document.querySelectorAll('#ms-list input[type=checkbox]').forEach(function(c){ c.checked=allChecked; });
+  STATE.selectedAccounts = [];
+  updateMsBtn();
+  STATE.page=1; render();
+}
+
+function msChanged(){
+  var checked = Array.from(document.querySelectorAll('#ms-list input[type=checkbox]:checked')).map(function(c){ return c.dataset.acct; });
+  var all = document.querySelectorAll('#ms-list input[type=checkbox]');
+  STATE.selectedAccounts = checked.length===all.length ? [] : checked;
+  var allCb = document.getElementById('ms-chk-all');
+  if(allCb) allCb.checked = checked.length===all.length;
+  updateMsBtn();
+  STATE.page=1; render();
+}
+
+function updateMsBtn(){
+  var btn = document.getElementById('ms-btn');
+  var label = document.getElementById('ms-label');
+  if(!btn || !label) return;
+  var n = STATE.selectedAccounts.length;
+  if(n===0){
+    label.textContent = 'All accounts';
+    btn.classList.remove('has-filter');
+  } else {
+    label.textContent = n + ' account'+(n!==1?'s':'')+' selected';
+    btn.classList.add('has-filter');
+  }
+}
+
+// ── Accounts group filter ─────────────────────────────────────────────────────
+var ACCT_GROUPS_ORDER = ['All',"Rob's Personal",'Perseverance','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'];
+
+function renderAcctGroupFilter(){
+  var el = document.getElementById('acct-group-filter');
+  if(!el) return;
+  var current = STATE.acctGroup || 'all';
+  el.innerHTML = ACCT_GROUPS_ORDER.map(function(g){
+    var val = g === 'All' ? 'all' : g;
+    var active = current === val;
+    return '<button style="border:1px solid '+(active?'var(--accent)':'var(--line)')+';background:'+(active?'var(--accent)':'#fff')+';color:'+(active?'#fff':'var(--muted)')+';border-radius:16px;padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer" data-grp="'+val+'" onclick="setAcctGroup(this.dataset.grp)">'+g+'</button>';
   }).join('');
 }
 
-// ── Modal ────────────────────────────────────────────────────────────────────
-var _editingUserId = null;
-
-function openUserModal(userId){
-  _editingUserId = userId || null;
-  document.getElementById('modal-title').textContent = userId ? 'Edit User' : 'New User';
-  document.getElementById('um-edit-id').value = userId || '';
-  document.getElementById('um-name').value = '';
-  document.getElementById('um-username').value = '';
-  document.getElementById('um-password').value = '';
-  document.getElementById('um-modal-err').style.display = 'none';
-
-  // Populate account checklist
-  var allAccounts = Object.keys(LIVE_BALANCES);
-  var selectedAccounts = [];
-  if(userId && _usersCache){
-    var u = _usersCache.find(function(x){ return x.id === userId; });
-    if(u){
-      document.getElementById('um-name').value = u.name || '';
-      document.getElementById('um-username').value = u.username || '';
-      selectedAccounts = u.allowed_accounts || [];
-    }
-  }
-
-  // Build checklist grouped by account group
-  var listEl = document.getElementById('um-acct-list');
-  if(!allAccounts.length){
-    listEl.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:12px">No accounts loaded. Open the dashboard first.</div>';
-  } else {
-    var grouped = {};
-    allAccounts.forEach(function(name){
-      var g = getAccountGroup(name);
-      if(!grouped[g]) grouped[g] = [];
-      grouped[g].push(name);
-    });
-    var html = '';
-    ['Personal','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'].concat(
-      Object.keys(grouped).filter(function(g){ return ['Personal','Frank Personal','PayDiverse/Elm','Celestra/Fortuna'].indexOf(g)===-1; })
-    ).forEach(function(grp){
-      if(!grouped[grp] || !grouped[grp].length) return;
-      html += '<div class="acct-check-grp">' + esc(grp) + '</div>';
-      grouped[grp].forEach(function(name){
-        var checked = selectedAccounts.indexOf(name) !== -1;
-        var id = 'chk-' + name.replace(/[^a-z0-9]/gi,'_');
-        html += '<div class="acct-check-item"><input type="checkbox" id="' + id + '" value="' + esc(name) + '"' + (checked?' checked':'') + '><label for="' + id + '">' + esc(name) + '</label></div>';
-      });
-    });
-    listEl.innerHTML = html;
-  }
-
-  document.getElementById('user-modal').style.display = 'flex';
-  setTimeout(function(){ document.getElementById('um-name').focus(); }, 80);
+function setAcctGroup(g){
+  STATE.acctGroup = g;
+  renderAcctGroupFilter();
+  drawAccounts();
+  drawChips();
 }
 
-function closeUserModal(){
-  document.getElementById('user-modal').style.display = 'none';
-  _editingUserId = null;
-}
+// ── Transaction line chart + total box ────────────────────────────────────────
+var lineChartInst = null;
 
-function saveUser(){
-  var name = document.getElementById('um-name').value.trim();
-  var username = document.getElementById('um-username').value.trim();
-  var password = document.getElementById('um-password').value;
-  var checked = document.querySelectorAll('#um-acct-list input[type=checkbox]:checked');
-  var allowed = Array.from(checked).map(function(c){ return c.value; });
+function drawLedgerChart(rows){
+  var summaryEl = document.getElementById('txn-summary');
+  var wrapEl = document.getElementById('txn-chart-wrap');
+  if(!summaryEl || !wrapEl) return;
 
-  if(!name || !username){
-    showModalErr('Name and username are required.');
-    return;
-  }
+  // Summary totals
+  var totalSpent = rows.filter(function(r){return r.amount<0;}).reduce(function(s,r){return s+(-r.amount);},0);
+  var totalIncome = rows.filter(function(r){return r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);
+  var net = totalIncome - totalSpent;
+  summaryEl.innerHTML = [
+    ['Total Transactions', rows.length, '#1d4ed8', '#dbeafe'],
+    ['Total Spent', usd(totalSpent), '#dc2626', '#fee2e2'],
+    ['Total Income', usd(totalIncome), '#059669', '#d1fae5'],
+    ['Net', (net>=0?'+':'')+usd(net), net>=0?'#059669':'#dc2626', net>=0?'#d1fae5':'#fee2e2'],
+  ].map(function(item){
+    return '<div style="flex:1;min-width:140px;background:'+item[3]+';border-radius:10px;padding:12px 16px">'+
+      '<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+item[2]+';opacity:.8">'+item[0]+'</div>'+
+      '<div style="font-size:18px;font-weight:800;color:'+item[2]+';margin-top:4px">'+item[1]+'</div>'+
+    '</div>';
+  }).join('');
 
-  var body = { name: name, username: username, allowed_accounts: allowed };
-  if(password) body.password = password;
-
-  var method = _editingUserId ? 'PUT' : 'POST';
-  var path = _editingUserId ? '?id=' + _editingUserId : '';
-
-  apiUsers(method, path, body)
-    .then(function(data){
-      closeUserModal();
-      if(_usersCache){
-        if(method === 'POST'){ _usersCache.push(data.user); }
-        else {
-          var idx = _usersCache.findIndex(function(u){ return u.id === data.user.id; });
-          if(idx !== -1) _usersCache[idx] = data.user;
-        }
-        renderUsersTable(_usersCache);
-      }
-      showToast((_editingUserId ? 'User updated' : 'User created') + ' — ' + name);
-    })
-    .catch(function(e){ showModalErr(e.message); });
-}
-
-function showModalErr(msg){
-  var el = document.getElementById('um-modal-err');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function deleteUser(id, name){
-  if(!confirm('Delete user "' + name + '"? Their access link will stop working immediately.')) return;
-  apiUsers('DELETE', '?id=' + id)
-    .then(function(){
-      if(_usersCache){
-        _usersCache = _usersCache.filter(function(u){ return u.id !== id; });
-        renderUsersTable(_usersCache);
-      }
-      showToast('User deleted — ' + name);
-    })
-    .catch(function(e){ showToast('Error: ' + e.message); });
-}
-
-function copyLink(link){
-  navigator.clipboard.writeText(link).then(function(){
-    showToast('Link copied to clipboard!');
-  }).catch(function(){
-    prompt('Copy this link:', link);
+  // Line chart by month
+  if(!rows.length){ wrapEl.style.display='none'; return; }
+  var months = Array.from(new Set(rows.map(function(r){return r.month;}))).sort();
+  if(months.length < 2){ wrapEl.style.display='none'; return; }
+  wrapEl.style.display = 'block';
+  var spentByMonth = months.map(function(m){
+    return rows.filter(function(r){return r.month===m&&r.amount<0;}).reduce(function(s,r){return s+(-r.amount);},0);
+  });
+  var incByMonth = months.map(function(m){
+    return rows.filter(function(r){return r.month===m&&r.amount>0;}).reduce(function(s,r){return s+r.amount;},0);
+  });
+  var ctx = document.getElementById('lineChart');
+  if(!ctx) return;
+  if(lineChartInst) lineChartInst.destroy();
+  lineChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months.map(monthLabel),
+      datasets: [
+        { label:'Spent', data:spentByMonth, borderColor:'#dc2626', backgroundColor:'rgba(220,38,38,.08)', tension:.4, fill:true, pointRadius:4 },
+        { label:'Income', data:incByMonth, borderColor:'#1d4ed8', backgroundColor:'rgba(29,78,216,.08)', tension:.4, fill:true, pointRadius:4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'top', labels:{font:{size:11}} } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){return '$'+(v/1000).toFixed(0)+'k';} } } } }
   });
 }
-
-function showToast(msg){
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+function editDesc(td){
+  if(td.querySelector('.desc-input')) return;
+  var key=td.dataset.key; var orig=td.dataset.orig;
+  var current=CUSTOM_DESC[key]||orig;
+  var input=document.createElement('input');
+  input.className='desc-input'; input.value=current; input.type='text';
+  td.innerHTML=''; td.appendChild(input); input.focus(); input.select();
+  function save(){
+    var val=(input.value||'').trim();
+    input.onblur=null;
+    if(!val||val===orig){ delete CUSTOM_DESC[key]; postOverride(key,''); }
+    else { CUSTOM_DESC[key]=val; postOverride(key,val); }
+    drawTable();
+  }
+  input.onblur=save;
+  input.onkeydown=function(e){
+    if(e.key==='Enter'){e.preventDefault();input.onblur=null;save();}
+    if(e.key==='Escape'){e.preventDefault();input.onblur=null;drawTable();}
+  };
+}
+function revertDesc(e,el){
+  e.stopPropagation();
+  var td=el.closest?el.closest('.desc-cell'):el.parentElement;
+  var key=td?td.dataset.key:null; if(!key) return;
+  delete CUSTOM_DESC[key]; postOverride(key,''); drawTable();
+}
+function postOverride(txnKey,customDesc){
+  fetch('/api/desc-overrides',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({txn_key:txnKey,custom_desc:customDesc,updated_by:CURRENT_USER})
+  }).catch(function(e){console.error('Override save failed:',e);});
 }
 </script>
 </body>
 </html>
-
